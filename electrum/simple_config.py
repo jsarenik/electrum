@@ -29,7 +29,7 @@ FEE_LN_ETA_TARGET = 2  # note: make sure the network is asking for estimates for
 # satoshi per kbyte
 FEERATE_MAX_DYNAMIC = 1500000
 FEERATE_WARNING_HIGH_FEE = 600000
-FEERATE_FALLBACK_STATIC_FEE = 150000
+FEERATE_FALLBACK_STATIC_FEE = 1000
 FEERATE_DEFAULT_RELAY = 1000
 FEERATE_MAX_RELAY = 50000
 FEERATE_STATIC_VALUES = [1000, 2000, 5000, 10000, 20000, 30000,
@@ -635,7 +635,7 @@ class SimpleConfig(Logger):
             rate_str = 'unknown'
             fee_per_byte = None
         else:
-            fee_per_byte = fee_per_kb/1000
+            fee_per_byte = fee_per_kb/1024
             rate_str = format_fee_satoshis(fee_per_byte) + ' sat/byte'
 
         if dyn:
@@ -801,7 +801,7 @@ class SimpleConfig(Logger):
         Note: might return None.
         """
         fee_per_kb = self.fee_per_kb()
-        return fee_per_kb / 1000 if fee_per_kb is not None else None
+        return fee_per_kb / 1024 if fee_per_kb is not None else None
 
     def estimate_fee(self, size: Union[int, float, Decimal], *,
                      allow_fallback_to_static_rates: bool = False) -> int:
@@ -819,7 +819,7 @@ class SimpleConfig(Logger):
         # note: 'size' is in vbytes
         size = Decimal(size)
         fee_per_kb = Decimal(fee_per_kb)
-        fee_per_byte = fee_per_kb / 1000
+        fee_per_byte = fee_per_kb / 1024
         # to be consistent with what is displayed in the GUI,
         # the calculation needs to use the same precision:
         fee_per_byte = quantize_feerate(fee_per_byte)
@@ -874,7 +874,7 @@ class SimpleConfig(Logger):
 
     def format_fee_rate(self, fee_rate) -> str:
         """fee_rate is in sat/kvByte."""
-        return format_fee_satoshis(fee_rate/1000, num_zeros=self.num_zeros) + ' sat/byte'
+        return format_fee_satoshis(fee_rate/1024, num_zeros=self.num_zeros) + ' sat/byte'
 
     def get_base_unit(self):
         return decimal_point_to_base_unit_name(self.decimal_point)

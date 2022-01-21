@@ -1866,7 +1866,7 @@ class Abstract_Wallet(ABC, Logger, EventListener):
                 base_tx.add_info_from_wallet(self)
                 base_tx_fee = base_tx.get_fee()
                 base_feerate = Decimal(base_tx_fee)/base_tx.estimated_size()
-                relayfeerate = Decimal(self.relayfee()) / 1000
+                relayfeerate = Decimal(self.relayfee()) / 1024
                 original_fee_estimator = fee_estimator
                 def fee_estimator(size: Union[int, float, Decimal]) -> int:
                     size = Decimal(size)
@@ -3168,7 +3168,7 @@ class Abstract_Wallet(ABC, Logger, EventListener):
         long_warning = None
         short_warning = None
         allow_send = True
-        if feerate < self.relayfee() / 1000:
+        if feerate < self.relayfee() / 1024:
             long_warning = ' '.join([
                 _("This transaction requires a higher fee, or it will not be propagated by your current server."),
                 _("Try to raise your transaction fee, or use a server with a lower relay fee.")
@@ -3181,7 +3181,7 @@ class Abstract_Wallet(ABC, Logger, EventListener):
                 _("({}% of amount)").format(f'{fee_ratio*100:.2f}')
             ])
             short_warning = _("high fee ratio") + "!"
-        elif feerate > FEERATE_WARNING_HIGH_FEE / 1000:
+        elif feerate > FEERATE_WARNING_HIGH_FEE / 1024:
             long_warning = ' '.join([
                 _("The fee for this transaction seems unusually high."),
                 _("(feerate: {} sat/byte)").format(f'{feerate:.2f}')
